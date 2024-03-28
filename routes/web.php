@@ -21,22 +21,39 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::get('/user', [UserController::class, 'index'])->name('user.index');
-Route::get('/product', [ProductController::class, 'index'])->name('product.index');
-Route::get('/sale', [SaleController::class, 'index'])->name('sale.index');
-Route::get('/sale/create', [SaleController::class, 'create'])->name('sale.create');
-Route::post('/sale/invoice', [SaleController::class, 'invoice'])->name('sale.invoice');
-Route::post('/sale/invoice-data', [SaleController::class, 'invoiceData'])->name('sale.invoice-data');
+Route::group(['middleware' => 'isLogin'], function () {
+    Route::group(['middleware' => 'isAdmin'], function () {
+        Route::get('/user', [UserController::class, 'index'])->name('user.index');
 
-Route::post('/login', [AuthController::class, 'store'])->name('login.store');
-Route::post('/user', [UserController::class, 'store'])->name('user.store');
-Route::post('/product', [ProductController::class, 'store'])->name('product.store');
+        Route::post('/user', [UserController::class, 'store'])->name('user.store');
+        Route::post('/product', [ProductController::class, 'store'])->name('product.store');
 
-Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
-Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
-Route::put('/product/stock/{product}', [ProductController::class, 'addStock'])->name('product.stock');
+        Route::put('/user/{user}', [UserController::class, 'update'])->name('user.update');
+        Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
+        Route::put('/product/stock/{product}', [ProductController::class, 'addStock'])->name('product.stock');
 
-Route::get('/user-export', [UserController::class, 'export'])->name('user.export');
-Route::get('/product-export', [ProductController::class, 'export'])->name('product.export');
-Route::get('/sale/invoice/{sale}', [SaleController::class, 'export'])->name('sale.export');
+        Route::get('/user-export', [UserController::class, 'export'])->name('user.export');
+    });
+
+    Route::group(['middleware' => 'isStaff'], function () {
+        Route::get('/sale/create', [SaleController::class, 'create'])->name('sale.create');
+
+        Route::post('/sale/invoice', [SaleController::class, 'invoice'])->name('sale.invoice');
+        Route::post('/sale/invoice-data', [SaleController::class, 'invoiceData'])->name('sale.invoice-data');
+    });
+
+    Route::get('/product', [ProductController::class, 'index'])->name('product.index');
+    Route::get('/sale', [SaleController::class, 'index'])->name('sale.index');
+
+    Route::get('/product-export', [ProductController::class, 'export'])->name('product.export');
+    Route::get('/sale-export', [SaleController::class, 'exportExcel'])->name('sale.export.excel');
+    Route::get('/sale/invoice/{sale}', [SaleController::class, 'export'])->name('sale.export');
+
+    Route::get('/logout', [AuthController::class, 'destroy'])->name('logout');
+});
+
+Route::group(['middleware' => 'isGuest'], function () {
+    Route::get('login', [AuthController::class, 'login'])->name('login');
+    Route::post('/login', [AuthController::class, 'store'])->name('login.store');
+});
+

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SalesExport;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Sale;
@@ -10,6 +11,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SaleController extends Controller
 {
@@ -137,7 +139,7 @@ class SaleController extends Controller
                             'sale_id' => $sale->id,
                             'product_id' => $item->id,
                             'quantity' => $product["quantity"],
-                            'subtotal' => $item->price
+                            'subtotal' => $price
                         ]);
 
                         $productUpdate = Product::find($item->id);
@@ -163,6 +165,11 @@ class SaleController extends Controller
         $pdf = Pdf::loadView('admin.sales.pdf-print', ['sale' => $sale]);
     
         return $pdf->download('invoice_' . $sale->customer->name . '.pdf');
+    }
+
+    public function exportExcel()
+    {
+        return Excel::download(new SalesExport, 'sales.xlsx');
     }
     
 

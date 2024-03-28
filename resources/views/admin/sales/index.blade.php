@@ -9,7 +9,7 @@
             <p class="text-xl">List Products</p>
         </div>
         <div class="flex justify-between mt-4">
-            <a href="{{ route('product.export') }}"
+            <a href="{{ route('sale.export.excel') }}"
                 class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                 <svg class="w-6 h-6 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -18,6 +18,7 @@
                 </svg>
                 Export Sales
             </a>
+            @if(Auth::user()->hasRole('staff'))
             <a href="{{ route('sale.create') }}"
                 class="text-white inline-flex items-center bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -28,6 +29,7 @@
                 </svg>
                 Add Sale
             </a>
+            @endif
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-2">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -77,10 +79,13 @@
                                     data-modal-toggle="detail{{ $sale->id }}" type="button"
                                     class="text-white focus:ring-4 bg-yellow-300 hover:bg-yellow-800 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">Detail</button>
                                 <a href="{{ route('sale.export', $sale->id) }}"
-                                    class="text-white focus:ring-4 bg-blue-300 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Download Proof</a>
+                                    class="text-white focus:ring-4 bg-blue-300 hover:bg-blue-800 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Download
+                                    Proof</a>
+                                @if(Auth::user()->hasRole('staff'))
                                 <button type="submit"
                                     class="text-white focus:ring-4 bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                                     Delete</button>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
@@ -105,8 +110,8 @@
                         <button type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                             data-modal-toggle="detail{{ $sale->id }}">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 14 14">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                             </svg>
@@ -117,7 +122,7 @@
                     <div class="text-center">
                         <h2 class="text-2xl font-bold">Indo Agus</h2>
                     </div>
-        
+
                     <div class="mt-4">
                         <div class="info">
                             <p class="mb-2">Nama Pelanggan : {{ $sale['customer']['name'] }}</p>
@@ -125,7 +130,7 @@
                             <p class="mb-2">No HP Pelanggan : {{ $sale['customer']['phone_number'] }}</p>
                         </div>
                     </div>
-        
+
                     <div class="mt-4">
                         <div id="table">
                             <table class="w-full">
@@ -139,27 +144,31 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($sale['saleDetail'] as $item)
-                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                        <td class="py-2 px-3">{{ $item['product']['name'] }}</td>
-                                        <td class="py-2 px-3">{{ $item['quantity'] }}</td>
-                                        <td class="py-2 px-3">Rp. {{ number_format($item['product']['price'], '0', ',', '.') }}</td>
-                                        <td class="py-2 px-3">Rp. {{ number_format($item['subtotal'], '0', ',', '.') }}</td>
-                                    </tr>
+                                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                            <td class="py-2 px-3">{{ $item['product']['name'] }}</td>
+                                            <td class="py-2 px-3">{{ $item['quantity'] }}</td>
+                                            <td class="py-2 px-3">Rp.
+                                                {{ number_format($item['product']['price'], '0', ',', '.') }}</td>
+                                            <td class="py-2 px-3">Rp.
+                                                {{ number_format($item['subtotal'], '0', ',', '.') }}</td>
+                                        </tr>
                                     @endforeach
                                     <tr class="bg-gray-200">
                                         <td class="py-2 px-3"></td>
                                         <td class="py-2 px-3"></td>
                                         <td class="py-2 px-3 font-bold">Total Harga</td>
-                                        <td class="py-2 px-3 font-bold">Rp. {{ number_format($sale['price_total'], '0', ',', '.') }}</td>
+                                        <td class="py-2 px-3 font-bold">Rp.
+                                            {{ number_format($sale['price_total'], '0', ',', '.') }}</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-        
+
                         <div class="mt-4 text-center">
                             <p class="text-sm">{{ $sale['created_at'] }} | {{ $sale['user']['name'] }}</p>
                             <p class="legal text-gray-600"><strong>Terima kasih atas pembelian Anda!</strong></p>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>

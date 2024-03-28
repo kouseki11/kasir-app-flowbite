@@ -42,14 +42,9 @@
                         </div>
                         <ul class="py-1" role="none">
                             <li>
-                                <a href=""
+                                <a href="{{ route('logout') }}"
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    role="menuitem">Library</a>
-                            </li>
-                            <li>
-                                <a href=""
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                    role="menuitem">Sign out</a>
+                                    role="menuitem">Logout</a>
                             </li>
                         </ul>
                     </div>
@@ -77,6 +72,7 @@
                     <span class="ms-3">Dashboard</span>
                 </a>
             </li>
+            
             <li>
                 <a href="{{ route('user.index') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
@@ -111,7 +107,7 @@
                 </a>
             </li>
             <li>
-                <a href=""
+                <a href="{{ route('logout') }}"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg class="w-6 h-6 text-gray-500 group-hover:text-gray-900 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"

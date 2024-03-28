@@ -22,6 +22,9 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
+        if(Auth::user()->hasRole('staff')) {
+            return redirect()->intended(RouteServiceProvider::SALE);
+        }
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -33,6 +36,6 @@ class AuthController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('login');
     }
 }
